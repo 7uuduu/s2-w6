@@ -17,7 +17,7 @@ import java.io.IOException;
 public class CityPopulationAnalyzer {
     
     private String[] cityNames;      // Array to store city names
-    private double[] populations;    // Array to store populations
+    private Double[] populations;    // Array to store populations
     private int count;               // Track how many cities we've read
     private static final int INITIAL_CAPACITY = 150; // Start with capacity for ~150 cities
     
@@ -28,6 +28,11 @@ public class CityPopulationAnalyzer {
         // TODO: Initialize cityNames array with INITIAL_CAPACITY
         // TODO: Initialize populations array with INITIAL_CAPACITY
         // TODO: Set count to 0
+
+        String[] cityNames = new String[INITIAL_CAPACITY];
+        Double[] populations = new Double[INITIAL_CAPACITY];
+        count = 0;
+        
     }
     
     /**
@@ -43,7 +48,7 @@ public class CityPopulationAnalyzer {
      * @param filename the path to the data file
      * @throws IOException, InputMismatchException if the file cannot be found or read
      */
-    public void readAndSortData(String filename)  {
+    public void readAndSortData(String filename) throws IOException {
         // TODO: Create a File object with the filename
         // TODO: Create a Scanner to read from the file
         
@@ -55,7 +60,23 @@ public class CityPopulationAnalyzer {
         // HINT: If array is full, call resizeArrays()
         // TODO: Close the scanner
         
+        File file = new File(filename);
+
+        Scanner s = new Scanner(file);
+
+        while (s.hasNextLine()){
+            String name = s.nextLine();
+            if (s.hasNextLine()){
+                Double population = Double.parseDouble(s.nextLine());
+                
+                insertSorted(name, population);
+
+                // resizeArrays();
+            }
+        }
         
+        s.close();
+
         System.out.println("Successfully read " + count + " cities from " + filename);
     }
     
@@ -79,20 +100,39 @@ public class CityPopulationAnalyzer {
         // TODO: Insert the new city and population at the correct position
         
         // TODO: Increment count
+
+        for (int i = 0; i < count; i++){
+            if (population > populations[i]){
+                int position = i;
+                for (int y = position; y < count+1; y++){
+                    populations[y] = populations[y-1];
+                    cityNames[y] = cityNames[y-1];
+                }
+                populations[i] = population;
+                cityNames[i] = cityName;
+            }
+        }
     }
     
     /**
      * Doubles the size of the arrays when they get full
      */
     private void resizeArrays() {
-        // TODO: Create new arrays twice the current size
-        
-        // TODO: Copy all existing data to the new arrays
-        // HINT: Use a loop from 0 to count
-        
-        // TODO: Update the instance variables to point to the new arrays
-        
-        System.out.println("Arrays resized to capacity: " + cityNames.length);
+        if (count > 0.8*cityNames.length){
+            
+            Double[] newpopulations = new Double[populations.length*2];
+            String[] newcityNames = new String[cityNames.length*2];
+
+            for (int i = 0; i <count; i++){
+                newpopulations[i] = populations[i];
+                newcityNames[i] = cityNames[i];
+            }
+
+            populations = newpopulations;
+            cityNames = newcityNames;
+
+            System.out.println("Arrays resized to capacity: " + cityNames.length);
+        }     
     }
     
     /**
@@ -100,7 +140,10 @@ public class CityPopulationAnalyzer {
      */
     public void displayTopCities(int n) {
         System.out.println("\n=== Top " + n + " Cities by Population ===");
-        // TODO go for it
+    
+        for (int i = 0; i < n; i++){
+            System.out.println(i + cityNames[i]);
+        }
     }
     
         
