@@ -71,7 +71,7 @@ public class CityPopulationAnalyzer {
             if (s.hasNextLine()){
                 Double population = Double.parseDouble(s.nextLine());
                 cntlite++;
-
+                
                 insertSorted(name, population);
                 resizeArrays();
             }
@@ -109,9 +109,7 @@ public class CityPopulationAnalyzer {
         }
 
         for (int i = 0; i < count; i++){
-            if (populations[i] == null){ //problem
-                populations[i] = population;
-            }
+
             if (population > populations[i]){
 
                 for (int y = count; y >= i; y--){
@@ -120,13 +118,19 @@ public class CityPopulationAnalyzer {
                     cityNames[y] = cityNames[y-1];
                     
                 }
-                
+
+                populations[i] = population;
+                cityNames[i] = cityName;
+                count++;
+            } else if (populations[i] == null){
                 populations[i] = population;
                 cityNames[i] = cityName;
                 count++;
             }
             
+            
         }
+        
     }
     
     /**
