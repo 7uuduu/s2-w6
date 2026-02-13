@@ -2,8 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Arrays;
-import java.io.IOException;
-
+    import java.io.IOException;
+            
 /**
  * CityPopulationAnalyzer
  * 
@@ -29,8 +29,8 @@ public class CityPopulationAnalyzer {
         // TODO: Initialize populations array with INITIAL_CAPACITY
         // TODO: Set count to 0
 
-        String[] cityNames = new String[INITIAL_CAPACITY];
-        Double[] populations = new Double[INITIAL_CAPACITY];
+        cityNames = new String[INITIAL_CAPACITY];
+        populations = new Double[INITIAL_CAPACITY];
         count = 0;
         
     }
@@ -64,22 +64,24 @@ public class CityPopulationAnalyzer {
 
         Scanner s = new Scanner(file);
 
+        int cntlite = 0;
+
         while (s.hasNextLine()){
             String name = s.nextLine();
             if (s.hasNextLine()){
                 Double population = Double.parseDouble(s.nextLine());
-                
-                insertSorted(name, population);
+                cntlite++;
 
-                // resizeArrays();
+                insertSorted(name, population);
+                resizeArrays();
             }
         }
         
         s.close();
 
-        System.out.println("Successfully read " + count + " cities from " + filename);
+        System.out.println("Successfully read " + cntlite + " cities from " + filename);
     }
-    
+
     /**
      * Inserts a city and its population into the arrays in sorted order
      * (sorted by population, highest to lowest)
@@ -100,17 +102,30 @@ public class CityPopulationAnalyzer {
         // TODO: Insert the new city and population at the correct position
         
         // TODO: Increment count
+        if (count == 0){
+            populations[0] = population;
+            cityNames[0] = cityName;
+            count++;
+        }
 
         for (int i = 0; i < count; i++){
+            if (populations[i] == null){ //problem
+                populations[i] = population;
+            }
             if (population > populations[i]){
-                int position = i;
-                for (int y = position; y < count+1; y++){
+
+                for (int y = count; y >= i; y--){
+                    
                     populations[y] = populations[y-1];
                     cityNames[y] = cityNames[y-1];
+                    
                 }
+                
                 populations[i] = population;
                 cityNames[i] = cityName;
+                count++;
             }
+            
         }
     }
     
@@ -142,7 +157,7 @@ public class CityPopulationAnalyzer {
         System.out.println("\n=== Top " + n + " Cities by Population ===");
     
         for (int i = 0; i < n; i++){
-            System.out.println(i + cityNames[i]);
+            System.out.println(i+1 + ". " + cityNames[i]);
         }
     }
     
@@ -151,8 +166,7 @@ public class CityPopulationAnalyzer {
      * Returns the number of cities loaded
      */
     public int getCount() {
-        //TODO
-        return -1;
+        return count;
     }
 
     /**
